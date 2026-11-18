@@ -5,6 +5,8 @@
 <title>FORMA — Training Tracker</title>
 <meta name="application-name" content="FORMA">
 <meta name="apple-mobile-web-app-title" content="FORMA">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="description" content="FORMA personal workout and training progress tracker.">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
 <link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
@@ -188,7 +190,54 @@ details.pd{border-bottom:1px solid var(--ln);padding:10px 0}details.pd:last-chil
 .sws input[type=color]{width:44px;height:38px;border:0;background:none;padding:0;border-radius:10px;cursor:pointer;min-height:0}
 .pvbox{border:1px dashed var(--ln2);border-radius:16px;padding:12px;margin-top:6px;background:var(--bg)}.pvbox .hero{margin-bottom:10px}.pvbox .sr{padding:0}
 .lt{font:600 12px Inter;color:var(--mu);margin:2px 0 0}
-</style><script>/* ===== appearance engine (kept separate from workout data: localStorage key "forma.prefs") ===== */
+</style>
+<script>/* FORMA local workspace layer — wraps legacy keys so the existing tracker remains compatible. */
+(()=>{
+ const REG='forma.workspaces.v1',ACTIVE='forma.workspace.active',PREFIX='forma.workspace.data.';
+ const nativeGet=Storage.prototype.getItem,nativeSet=Storage.prototype.setItem,nativeRemove=Storage.prototype.removeItem;
+ const keys=['m2099.v3.active','m2099.v3.history','m2099.v3.top','m2099.v3.snaps','m2099.v3.meta','forma.prefs','m2099.v2.active','m2099.v2.history','m2099'];
+ const readReg=()=>{try{const x=JSON.parse(nativeGet.call(localStorage,REG)||'[]');return Array.isArray(x)?x:[]}catch(_){return[]}};
+ const writeReg=x=>nativeSet.call(localStorage,REG,JSON.stringify(x));
+ const uid=()=> 'ws_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,9);
+ let registry=readReg(),active=nativeGet.call(localStorage,ACTIVE)||'';
+ // Preserve the existing single-user installation as a workspace before redirecting any keys.
+ if(!registry.length){
+   const legacy=keys.some(k=>nativeGet.call(localStorage,k)!==null);
+   if(legacy){const id=uid(),ws={id,name:'My Training',color:'#33aaff',avatar:'💪',createdAt:Date.now(),updatedAt:Date.now()};
+     try{keys.forEach(k=>{const v=nativeGet.call(localStorage,k);if(v!==null)nativeSet.call(localStorage,PREFIX+id+'.'+k,v)});
+       if(!keys.every(k=>nativeGet.call(localStorage,k)===null||nativeGet.call(localStorage,PREFIX+id+'.'+k)!==null))throw Error('Migration verification failed');
+       registry=[ws];writeReg(registry);active=id;nativeSet.call(localStorage,ACTIVE,id);
+     }catch(_){registry=[];active='';/* originals remain untouched; app falls back to its original keys */}
+   }
+ }
+ const scoped=k=>{const id=nativeGet.call(localStorage,ACTIVE)||'';return keys.includes(k)&&id?PREFIX+id+'.'+k:k};
+ Storage.prototype.getItem=function(k){return nativeGet.call(this,scoped(String(k)))};
+ Storage.prototype.setItem=function(k,v){return nativeSet.call(this,scoped(String(k)),v)};
+ Storage.prototype.removeItem=function(k){return nativeRemove.call(this,scoped(String(k)))};
+ window.FORMA_WORKSPACES={
+  get registry(){return readReg()},get active(){return nativeGet.call(localStorage,ACTIVE)||''},get current(){return readReg().find(x=>x.id===this.active)||null},
+  setActive(id){if(!readReg().some(x=>x.id===id))throw Error('Workspace not found');nativeSet.call(localStorage,ACTIVE,id);location.reload()},
+  create(name,color,avatar){const r=readReg(),w={id:uid(),name:String(name||'My Training').trim().slice(0,48)||'My Training',color:color||'#33aaff',avatar:avatar||'💪',createdAt:Date.now(),updatedAt:Date.now()};r.push(w);writeReg(r);nativeSet.call(localStorage,ACTIVE,w.id);location.reload()},
+  update(id,patch){const r=readReg(),i=r.findIndex(x=>x.id===id);if(i<0)return;r[i]={...r[i],...patch,updatedAt:Date.now()};writeReg(r)},
+  remove(id){const r=readReg();if(r.length<2)throw Error('Keep at least one workspace');if(!r.some(x=>x.id===id))return;keys.forEach(k=>nativeRemove.call(localStorage,PREFIX+id+'.'+k));nativeRemove.call(localStorage,PREFIX+id+'.forma.workspace.backup');const next=r.filter(x=>x.id!==id);writeReg(next);if(this.active===id)nativeSet.call(localStorage,ACTIVE,next[0].id);location.reload()},
+  export(id){const w=readReg().find(x=>x.id===id);if(!w)throw Error('Workspace not found');const data={};keys.forEach(k=>{const v=nativeGet.call(localStorage,PREFIX+id+'.'+k);if(v!==null)data[k]=v});return{app:'forma-workspace',format:'forma.workspace',version:1,exportedAt:new Date().toISOString(),workspace:{...w},data}},
+  importBackup(obj,mode){if(!obj||typeof obj!=='object')throw Error('Invalid backup');let w,d;
+    if(obj.format==='forma.workspace'&&obj.version<=1&&obj.workspace&&obj.data){w=obj.workspace;d=obj.data}
+    else if((obj.app==='forma'||obj.app==='miguel-2099')&&(Array.isArray(obj.history)||Array.isArray(obj.sessions))){w={name:'Imported training',color:'#33aaff',avatar:'📦'};d={'m2099.v3.active':obj.active||null,'m2099.v3.history':obj.history||obj.sessions,'m2099.v3.top':obj};}
+    else throw Error('This is not a supported FORMA backup');
+    const r=readReg();let target=null;
+    if(mode==='replace'){target=this.active;if(!target)throw Error('No active workspace');const old=this.export(target);nativeSet.call(localStorage,PREFIX+target+'.forma.workspace.backup',JSON.stringify(old));keys.forEach(k=>nativeRemove.call(localStorage,PREFIX+target+'.'+k));const rr=readReg(),ri=rr.findIndex(x=>x.id===target);if(ri>=0){rr[ri]={...rr[ri],name:String(w.name||rr[ri].name).slice(0,48),color:w.color||rr[ri].color,avatar:w.avatar||rr[ri].avatar,updatedAt:Date.now()};writeReg(rr)}}
+    else {target=uid();r.push({id:target,name:String(w.name||'Imported training').slice(0,48)+' (imported)',color:w.color||'#33aaff',avatar:w.avatar||'📦',createdAt:Date.now(),updatedAt:Date.now()});writeReg(r)}
+    Object.entries(d).forEach(([k,v])=>{if(keys.includes(k)&&v!==null&&v!==undefined)nativeSet.call(localStorage,PREFIX+target+'.'+k,typeof v==='string'?v:JSON.stringify(v))});
+    if(!r.some(x=>x.id===target)){const rr=readReg();rr.push({id:target,name:String(w.name||'Restored training').slice(0,48),color:w.color||'#33aaff',avatar:w.avatar||'📦',createdAt:Date.now(),updatedAt:Date.now()});writeReg(rr)}
+    nativeSet.call(localStorage,ACTIVE,target);location.reload();
+  }
+ };
+ // Small IndexedDB mirror of the registry provides a recovery copy without changing the app's sync API.
+ try{const req=indexedDB.open('forma-local-v1',1);req.onupgradeneeded=()=>req.result.createObjectStore('meta');req.onsuccess=()=>{const tx=req.result.transaction('meta','readwrite');tx.objectStore('meta').put(readReg(),'workspaces');tx.objectStore('meta').put(Date.now(),'registry-saved-at')};}catch(_){ }
+})();
+</script>
+<script>/* ===== appearance engine (kept separate from workout data: localStorage key "forma.prefs") ===== */
 const THEMES={
  midnight:{n:"Midnight",d:{bg:"#07060f",sf:"#0f0d20",sf2:"#171433",sf3:"#211d47",ln:"#28234f",ln2:"#373069",tx:"#eeedff",mu:"#9a97c4",bl:"#33aaff",rd:"#ff3358",vi:"#8d6bff",g1:"#3a0f4a",g2:"#0b2a4a"},l:["#0b7ed6","#d6204a","#6d46e0"]},
  ocean:{n:"Ocean",d:{bg:"#041019",sf:"#08192a",sf2:"#0e2640",sf3:"#16355a",ln:"#173352",ln2:"#254f7a",tx:"#e6f6ff",mu:"#8fb4cf",bl:"#38bdf8",rd:"#2dd4bf",vi:"#818cf8",g1:"#064e5c",g2:"#0a2f5e"},l:["#0a7fb5","#0d8f84","#4f55d8"]},
@@ -216,11 +265,11 @@ function applyPrefs(p){p=p||PREFS;const L=effLight(p),pal=palette(p.theme,L),r=d
 function setPref(k,v){PREFS[k]=v;try{localStorage.setItem("forma.prefs",JSON.stringify(PREFS))}catch(e){}applyPrefs()}
 applyPrefs();try{matchMedia("(prefers-color-scheme: light)").addEventListener("change",()=>{if(PREFS.mode=="system")applyPrefs()})}catch(e){}
 </script></head><body>
-<header><div class="hin"><div class="logo"><i id="lg"></i><div><h1>FORMA</h1><small>TRAIN · TRACK · PROGRESS</small></div></div><span id="hs"></span></div></header>
+<header><div class="hin"><div class="logo"><i id="lg"></i><div><h1>FORMA</h1><small>TRAIN · TRACK · PROGRESS</small></div></div><span id="hs"></span><button id="workspaceBtn" class="chip" type="button" style="max-width:46%;overflow:hidden;text-overflow:ellipsis" aria-label="Switch workspace">☷ Workspace</button></div></header>
 <div class="wrap"><div class="wks" id="wk"></div><div id="main"></div></div>
 <div id="timer"><span class="tm" id="tm">0:00</span><span class="lb" id="tl">Rest</span><button data-t="-15">−15</button><button data-t="15">+15</button><button data-t="0">Skip</button><i class="pg2" id="tp"></i></div>
 <nav id="nav"></nav><div id="modal"></div><div id="toast"></div><div id="editor"></div><datalist id="exnames"></datalist>
-<input type="file" id="imp" accept="application/json,.json,text/plain" hidden>
+<input type="file" id="imp" accept="application/json,.json,text/plain" hidden><input type="file" id="workspaceImport" accept="application/json,.json" hidden><div id="workspaceLayer" role="dialog" aria-modal="true" aria-label="FORMA workspaces"><div class="wpanel" id="workspacePanel"></div></div>
 <script>
 const EX={pull:[
 ["Lat pulldown (neutral or medium grip)",4,"8–12",120,"Lats, upper back, biceps","Light: ~40% of what you think you can do; 3 reps left in the tank","Lean back slightly, pull elbows down to your ribs, pause, control the way up. Leads the day because lat width creates the V-taper.","Assisted pull-up machine, or band-assisted pull-ups"],
@@ -796,6 +845,30 @@ $("imp").addEventListener("change",async e=>{const f=e.target.files[0];e.target.
  if(k=="r"){meta.lastMod=A.lastExp||0;put(KEYS.m,meta)}
  open.clear();render();toast(`Import complete · ${H.length} sessions on this device.`,"ok")});
 
+/* ================= LOCAL WORKSPACES ================= */
+function workspaceUI(){const W=FORMA_WORKSPACES,ws=W.registry,cur=W.current,layer=$('workspaceLayer'),panel=$('workspacePanel');
+ $('workspaceBtn').textContent=(cur?cur.avatar+' '+cur.name:'☷ Choose workspace')+' ▾';
+ const first=!cur;
+ panel.innerHTML=`<div class="kick"><span class="live"></span> FORMA · PRIVATE ON THIS DEVICE</div><h2>${first?'Your training, your space.':'Workspaces'}</h2><p class="meta">Create separate training spaces for different people. No account, email or password required.</p>${ws.length?`<div class="wlist">${ws.map(w=>`<div class="witem"><div class="wa" style="background:${esc(w.color||'#33aaff')}22">${esc(w.avatar||'💪')}</div><div class="wn"><b>${esc(w.name)}</b><small>${w.id===W.active?'Currently active':'Separate training data'}</small></div><div class="wactions">${w.id!==W.active?`<button data-wswitch="${w.id}">Open</button>`:''}<button data-wrename="${w.id}">Rename</button><button data-wexport="${w.id}">Export</button>${ws.length>1?`<button data-wdelete="${w.id}">Delete</button>`:''}</div></div>`).join('')}</div>`:''}
+ <form class="wform" id="workspaceCreate"><h3>${first?'Create your first workspace':'Create another workspace'}</h3><label>Workspace name<input id="workspaceName" type="text" maxlength="48" placeholder="e.g. My Training" required></label><label>Profile colour<input id="workspaceColor" type="color" value="#33aaff" style="width:100%;height:42px;padding:3px"></label><label>Avatar<select id="workspaceAvatar"><option>💪</option><option>🏋️</option><option>⚡</option><option>🔥</option><option>🦾</option><option>🎯</option><option>🌿</option></select></label><button class="wprimary" type="submit">Create workspace</button></form>
+ <div class="wactions" style="margin-top:12px"><button id="workspaceImportBtn">Import backup</button>${cur?'<button id="workspaceDone">Continue to FORMA</button>':''}</div>
+ <p class="wfoot">Workspaces are local profiles, not password-protected accounts. Anyone with access to this device and its browser storage may be able to open them. Data stays in this browser; export backups regularly to move it to another device. Browser storage can be cleared by the operating system or browser.</p>`;
+ layer.classList.toggle('show',first||workspaceForced);
+}
+let workspaceForced=!FORMA_WORKSPACES.current;
+$('workspaceBtn').addEventListener('click',()=>{workspaceForced=true;workspaceUI()});
+$('workspacePanel').addEventListener('click',async e=>{const b=e.target.closest('button');if(!b)return;const W=FORMA_WORKSPACES,id=b.dataset.wswitch||b.dataset.wrename||b.dataset.wexport||b.dataset.wdelete;
+ if(b.dataset.wswitch){W.setActive(id)}
+ if(b.dataset.wrename){const w=W.registry.find(x=>x.id===id),n=prompt('Workspace name',w.name);if(n&&n.trim()){W.update(id,{name:n.trim().slice(0,48)});workspaceUI()}}
+ if(b.dataset.wexport){const w=W.registry.find(x=>x.id===id),data=W.export(id),blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),filename='forma-workspace-'+(w.name||'training').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')+'-'+new Date().toISOString().slice(0,10)+'.json';if(navigator.share&&navigator.canShare){const file=new File([blob],filename,{type:'application/json'});if(navigator.canShare({files:[file]})){await navigator.share({files:[file],title:'FORMA workspace backup'});toast('Workspace backup ready to share.','ok')}else{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('Workspace backup exported.','ok')}}else{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);toast('Workspace backup exported.','ok')}}
+ if(b.dataset.wdelete){const w=W.registry.find(x=>x.id===id);if(confirm('Delete “'+w.name+'” and all its local training data? This cannot be undone. Export a backup first if needed.'))W.remove(id)}
+});
+$('workspaceCreate').addEventListener('submit',e=>{e.preventDefault();const n=$('workspaceName').value.trim();if(n){try{FORMA_WORKSPACES.create(n,$('workspaceColor').value,$('workspaceAvatar').value)}catch(err){alert('Could not create workspace. Browser storage may be full or unavailable. Export a backup and free some space, then try again.')}}});
+$('workspaceDone')?.addEventListener('click',()=>{$('workspaceLayer').classList.remove('show');workspaceForced=false});
+$('workspaceImportBtn').addEventListener('click',()=>$('workspaceImport').click());
+$('workspaceImport').addEventListener('change',async e=>{const f=e.target.files[0];e.target.value='';if(!f)return;try{const d=JSON.parse(await f.text());const choice=prompt('Import “'+(d.workspace?.name||'this FORMA backup')+'”\nEnter 1 to create a new workspace, or 2 to restore the currently active workspace (a safety copy is made first).\nCancel to stop.','1');if(choice==='1')FORMA_WORKSPACES.importBackup(d,'new');else if(choice==='2'&&FORMA_WORKSPACES.current&&confirm('Replace all data in “'+FORMA_WORKSPACES.current.name+'”? A safety backup will be created first.'))FORMA_WORKSPACES.importBackup(d,'replace')}catch(err){alert(err.message||'Could not import this backup')}});
+workspaceUI();
+
 /* ================= BOOT ================= */
 render();if(bootMsg)toast(bootMsg,"err");
-</script></body></html>
+</script><script>if("serviceWorker" in navigator && location.protocol!=="file:"){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}))}</script></body></html>
