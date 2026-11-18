@@ -100,24 +100,25 @@ input:focus,textarea:focus,select:focus,button:focus-visible{outline:2px solid v
 .btn.pri{background:var(--brand);color:var(--onbrand);border-color:var(--brand)}.btn.amb{background:var(--am);color:var(--onam);border-color:var(--am)}.btn.danger{background:none;border-color:color-mix(in srgb,var(--dgr) 45%,transparent);color:var(--dgr)}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
 /* yearly training consistency calendar */
-.heat-card{padding:14px;overflow:hidden}
-.heat-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-.heat-head h3{font:600 16px 'Chakra Petch'}
-.heat-select{width:auto;min-width:104px;min-height:38px;padding:7px 10px;font-size:14px}
-.heat-summary{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 14px}
-.heat-stat{background:var(--sf2);border:1px solid var(--ln);border-radius:11px;padding:8px 11px;min-width:88px}
-.heat-stat b{display:block;font:700 18px 'Chakra Petch'}
-.heat-stat span{display:block;color:var(--mu);font-size:11px}
-.heat-scroll{overflow-x:auto;padding:2px 0 8px;scrollbar-width:thin}
-.heat-months,.heat-grid{display:grid;grid-template-columns:repeat(53,10px);column-gap:3px;width:max-content}
-.heat-months{margin:0 0 6px;height:16px;align-items:end}
-.heat-months span{font-size:10px;color:var(--mu);white-space:nowrap}
-.heat-grid{grid-template-rows:repeat(7,10px);row-gap:3px}
-.heat-day{width:10px;height:10px;border-radius:2px;background:var(--sf3);border:1px solid color-mix(in srgb,var(--ln2) 55%,transparent)}
+.heat-card{padding:16px;overflow:hidden;margin-bottom:10px}
+.heat-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px}
+.heat-head h3{font:700 17px/1.25 'Chakra Petch';letter-spacing:.01em;margin:0}
+.heat-select{width:auto;min-width:96px;min-height:40px;padding:0 34px 0 14px;font:600 14px Inter;border-radius:12px;cursor:pointer;-webkit-appearance:none;appearance:none;background:var(--sf2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%239aa4b5' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center}
+.heat-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 18px}
+.heat-stat{background:var(--sf2);border:1px solid var(--ln);border-radius:14px;padding:12px 6px;min-width:0;text-align:center}
+.heat-stat b{display:block;font:700 22px/1 'Chakra Petch'}
+.heat-stat span{display:block;color:var(--mu);font-size:11px;margin-top:6px;white-space:nowrap}
+.heat-scroll{overflow-x:auto;padding:0 0 10px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.heat-months,.heat-grid{display:grid;grid-template-columns:repeat(53,14px);column-gap:4px;width:max-content}
+.heat-months{height:16px;margin:0 0 8px;align-items:end}
+.heat-months span{font:600 11px Inter;color:var(--mu);white-space:nowrap}
+.heat-grid{grid-template-rows:repeat(7,14px);row-gap:4px}
+.heat-day{display:block;width:14px;height:14px;border-radius:3px;background:var(--sf3);border:1px solid color-mix(in srgb,var(--ln2) 55%,transparent);box-sizing:border-box}
 .heat-day.active{background:#39e75f;border-color:#39e75f;box-shadow:0 0 5px #39e75f55}
-.heat-legend{display:flex;justify-content:flex-end;align-items:center;gap:5px;color:var(--mu);font-size:11px;margin-top:8px}
+.heat-legend .heat-day{width:12px;height:12px;aspect-ratio:auto;display:inline-block}
+.heat-legend{display:flex;justify-content:flex-end;align-items:center;gap:5px;color:var(--mu);font-size:11px;margin-top:6px}
 .heat-legend .heat-day{display:inline-block}
-.heat-note{font-size:12px;color:var(--mu);margin:8px 0 0}
+.heat-note{font-size:12px;line-height:1.5;color:var(--mu);margin:10px 0 0}
 /* stats */
 .tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:10px}
 .tile{padding:14px}.tile b{display:block;font-size:26px;line-height:1.1}.tile span{font-size:12px;color:var(--mu)}
@@ -226,6 +227,42 @@ details.apd[open]>summary{margin-bottom:6px}
 .themes.cmp{grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:8px;max-height:196px;overflow:auto;padding:3px;margin:8px 0 12px;overscroll-behavior:contain}
 .cmp .tt{padding:8px;gap:6px;border-radius:12px}.cmp .tt .m{display:none}.cmp .tt b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cmp .tt .d s{width:14px;height:14px}
 details.pvd>summary{cursor:pointer;list-style:none;min-height:36px;display:flex;align-items:center;justify-content:space-between}details.pvd>summary::-webkit-details-marker{display:none}details.pvd>summary::after{content:"Show";color:var(--brand);font-weight:600;font-size:12px}details.pvd[open]>summary::after{content:"Hide"}
+.sug{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 14px 10px;padding:8px 10px;font-size:13px;border:1px solid color-mix(in srgb,var(--brand) 45%,transparent);border-radius:10px;background:color-mix(in srgb,var(--brand) 10%,transparent)}.sug b{color:var(--brand)}.sug .btn{min-height:34px;padding:0 12px;font-size:12px;white-space:nowrap;flex:none}
+/* ===== FORMA UI v2 — visual layer (additive; layout and engine untouched) ===== */
+:root{--elev:0 1px 0 color-mix(in srgb,var(--tx) 7%,transparent) inset,0 14px 34px -18px rgba(0,0,0,.65)}
+::selection{background:color-mix(in srgb,var(--brand) 35%,transparent)}
+:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+button,.btn,.chip,.ck,.seg button,nav button,.tt{-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s,color .2s,box-shadow .2s,transform .12s}
+button:active:not(:disabled){transform:scale(.97)}
+header{background:color-mix(in srgb,var(--bg) 72%,transparent);backdrop-filter:blur(18px) saturate(1.4);border-bottom:1px solid color-mix(in srgb,var(--ln) 70%,transparent)}
+.logo i{width:34px;height:34px;border-radius:11px;box-shadow:0 6px 18px -4px color-mix(in srgb,var(--vi) 70%,transparent)}
+.logo h1{font-size:18px;letter-spacing:.14em}
+.chip{background:color-mix(in srgb,var(--sf2) 80%,transparent);border-color:var(--ln2);padding:7px 12px;box-shadow:0 2px 10px -4px rgba(0,0,0,.5)}.chip:hover{border-color:var(--brand)}
+.card{border-radius:20px;border-color:color-mix(in srgb,var(--ln) 85%,var(--tx) 4%);box-shadow:var(--elev)}
+.sec{display:flex;align-items:center;gap:12px;margin:26px 2px 12px;letter-spacing:.16em;font-size:12px}.sec::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--ln2),transparent)}
+.dash{gap:10px}.dash div{border-radius:18px;padding:12px 14px;background:linear-gradient(160deg,color-mix(in srgb,var(--tx) 5%,transparent),transparent 70%),var(--sf);box-shadow:var(--elev)}
+.dash b{font:700 24px 'Chakra Petch';letter-spacing:.01em}.dash span{text-transform:uppercase;letter-spacing:.1em;font-size:10px}
+.seg{gap:8px}.seg button{border-radius:18px;padding:13px 0 12px;box-shadow:var(--elev)}
+.seg button.on{background:linear-gradient(160deg,color-mix(in srgb,var(--ac) 32%,var(--sf)),color-mix(in srgb,var(--ac) 10%,var(--sf)));box-shadow:0 10px 30px -10px color-mix(in srgb,var(--ac) 55%,transparent),var(--elev)}
+.hero{border-radius:24px;box-shadow:0 24px 50px -24px color-mix(in srgb,var(--ac) 60%,transparent),var(--elev)}.hero h2{font-size:24px;letter-spacing:.01em}
+.ex{overflow:hidden;margin-bottom:14px}.ex::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:0 3px 3px 0;background:var(--ac);opacity:.35;transition:opacity .3s}.ex.done::before{opacity:1}
+.ch h3{font-size:17px;letter-spacing:.01em}
+.sr{gap:8px}.sr input{border-radius:14px;background:var(--sf2);border:1px solid var(--ln2);height:48px}
+.sr input:focus{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 8%,var(--sf2));outline:0;box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 25%,transparent)}
+.sr .sn{font:700 13px 'Chakra Petch'}
+.ck{border-radius:14px}.ck.on{background:var(--ac);border-color:var(--ac);box-shadow:0 6px 18px -6px color-mix(in srgb,var(--ac) 80%,transparent)}
+.btn{border-radius:14px}.btn:hover{border-color:var(--brand)}
+.btn.pri{background:linear-gradient(135deg,var(--brand),color-mix(in srgb,var(--brand) 70%,var(--vi)));border-color:transparent;box-shadow:0 10px 24px -10px color-mix(in srgb,var(--brand) 80%,transparent)}
+.sug{border-radius:14px}.last{letter-spacing:.01em}
+.themes .tt{border-radius:16px}
+@media(max-width:899px){
+ nav{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom,0px));padding:6px;gap:2px;border-radius:24px;border:1px solid var(--ln2);background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(20px) saturate(1.5);box-shadow:0 18px 44px -12px rgba(0,0,0,.75),var(--elev)}
+ nav button{border-radius:18px;padding:8px 0 7px}
+ nav button.on{background:color-mix(in srgb,var(--brand) 16%,transparent);color:var(--tx)}
+ nav button.on::after{content:"";position:absolute;top:3px;width:18px;height:3px;border-radius:3px;background:var(--brand)}
+}
+@media(min-width:900px){nav button.on{background:color-mix(in srgb,var(--brand) 14%,var(--sf3));box-shadow:inset 3px 0 0 var(--brand)}}
+@media(prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 </style>
 <script>/* FORMA local workspace layer v2 — workspace-aware, synchronous localStorage facade over the unchanged workout engine,
    with an IndexedDB recovery mirror, versioned backups, safety snapshots and rollback. No network, no accounts. */
@@ -497,6 +534,10 @@ const sorted=()=>[...H].sort((a,b)=>b.ts-a.ts);
 const doneSets=(s,n)=>{const e=s.ex.find(x=>x.name==n);return e?e.sets.filter(x=>x.d):[]};
 function lastFor(k,n){for(const pass of[1,2])for(const s of sorted())if((pass==2||s.day==k)){const d=doneSets(s,n);if(d.length)return{sets:d,ts:s.ts}}return null}
 const maxW=a=>{const w=a.filter(x=>x.w!=null).map(x=>x.w);return w.length?Math.max(...w):null};
+/*sug*/const repTop=r=>{r=String(r||"");if(/[a-z]/i.test(r))return null;const n=r.match(/\d+/g);return n?+n[n.length-1]:null};
+const jumpFor=n=>/lateral|side raise|rear delt|fly|flye|face pull/i.test(n)?1:/row|pulldown|pull-down|leg press|deadlift|rdl|squat|hip thrust/i.test(n)?5:2.5;
+function suggestW(x,prev){if(!prev)return null;const top=repTop(x.rng);if(!top)return null;const s=prev.sets;if(!s.length||s.length<Math.max(1,x.planned-1))return null;
+ if(s.some(q=>q.w==null||q.r==null||q.r<top))return null;const W=maxW(s);if(!(W>0))return null;return{w:Math.round((W+jumpFor(x.name))*10)/10,from:W,top,same:s.every(q=>q.w===W)}}/*endsug*/
 const grpOf=(name,e)=>(e&&e.g)||NG[name]||(()=>{for(const s of H)for(const x of s.ex)if(x.name==name&&x.g)return x.g;return"Other"})();
 function knownNames(){const n=new Set();DAYK.forEach(d=>EX[d].forEach(e=>{n.add(e[0]);String(e[7]).split(/,\s*or\s+|,\s*|\s+or\s+/i).forEach(a=>a&&n.add(cap(a.trim())))}));Object.values(A.sub).forEach(x=>n.add(x));H.forEach(s=>s.ex.forEach(e=>n.add(e.name)));return[...n].filter(Boolean).sort()}
 
@@ -544,6 +585,7 @@ function render(keep){const sc=scrollY;
  $("wk").innerHTML=Array.from({length:12},(_,i)=>{const c=H.filter(s=>s.week==i+1).length;return`<button class="${wk==i+1?"on":""} ${c?"has":""} ${c>=3?"full":""}" data-wk="${i+1}" aria-label="Week ${i+1}">${i+1}</button>`}).join("");
  $("exnames").innerHTML=knownNames().map(n=>`<option value="${esc(n)}">`).join("");
  $("main").innerHTML=({home,train,log:logV,stats:statsV,plan:planV,data:dataV})[tab]();
+ const hsx=document.querySelector(".heat-scroll");if(hsx)hsx.scrollLeft=Math.max(0,(+hsx.dataset.sc)*18-hsx.clientWidth+40);
  if(keep)scrollTo(0,sc);else scrollTo(0,0)}
 const T0=()=>A.t0[WK(wk,day)];
 function touch(){const k=WK(wk,day),n=Date.now(),o=A.t0[k];A.t0[k]={s:o?o.s:n,l:n}}
@@ -558,7 +600,7 @@ function train(){
  <section class="card hero c-${d}"><div class="ring">${ringSvg(pc,30)}<b id="hpc">${pc}%</b></div><div style="min-width:0"><div class="kick" id="hk">${inprog?'<i class="live"></i>Session in progress':"Ready to start"}</div><h2>${NAMES[d]}</h2><div class="meta">Week ${w} · ${p[0]}</div>
  <div class="hst"><span><b id="hsets">${st.dn}/${st.t}</b> sets</span><span><b id="hvol">${fmt(Math.round(st.vol))}</b> kg</span><span id="hdur">${t0?ic("train","")+" <b>"+fd((t0.l-t0.s)/1000)+"</b>":""}</span></div></div></section>
  <p class="note"><b>${p[0]}:</b> ${p[1]}</p><div class="c-${d}">`;
- L.forEach(x=>{const prev=lastFor(d,x.name),eff=[];let all=true,rows="";
+ L.forEach(x=>{const prev=lastFor(d,x.name),eff=[];let sg=suggestW(x,prev);if(sg&&[...Array(x.planned)].every((_,s)=>{const q=num((A.sets[`${w}-${d}-${x.id}-${s}`]||{}).w);return q!=null&&q>=sg.w}))sg=null;let all=true,rows="";
   for(let s=0;s<x.planned;s++){const key=`${w}-${d}-${x.id}-${s}`,sv=A.sets[key]||{},p0=prev&&(prev.sets[s]||prev.sets[prev.sets.length-1]),swp=s>0&&eff[s-1]&&eff[s-1].sw!=null;
    const pw=swp?eff[s-1].sw:p0?p0.w:(s>0&&eff[s-1]?eff[s-1].w:null),pr=p0?p0.r:(s>0&&eff[s-1]?eff[s-1].r:null);
    const sw=num(sv.w),sr=num(sv.r);eff[s]={w:sw!=null?sw:pw,r:sr!=null?sr:pr,sw};if(!sv.d)all=false;
@@ -566,6 +608,7 @@ function train(){
   const wk2=`${w}-${d}-${x.id}`,wu=(A.wu[wk2]||[]).map((q,i)=>`<div class="sr wu"><span class="sn">W</span><input type="number" step="any" inputmode="decimal" placeholder="kg" data-wu="${wk2}" data-wi="${i}" data-f="w" value="${esc(q.w??"")}"><input type="number" step="any" inputmode="numeric" placeholder="reps" data-wu="${wk2}" data-wi="${i}" data-f="r" value="${esc(q.r??"")}"><button class="ib" data-wudel="${wk2}" data-wi="${i}" aria-label="Remove warm-up">${ic("x")}</button></div>`).join("");
   h+=`<div class="card ex ${all&&x.planned?"done":""}" data-ex="${x.id}"><div class="ch"><button class="ck lg ${all&&x.planned?"on":""}" data-all="${x.id}" aria-label="Mark all sets done">${ic("check")}</button><div class="t"><h3>${esc(x.name)}${x.sub?'<i class="tag">swapped</i>':""}</h3><div class="meta">${x.planned} × ${esc(x.rng)} · rest ${x.rest>=120?Math.round(x.rest/6)/10+" min":x.rest+" s"} · ${esc(x.mus)}</div></div><button class="ib" data-menu="${x.id}" aria-label="Exercise options">${ic("more")}</button></div>
   ${prev?`<div class="last">Last time (${ago(prev.ts)}): ${prev.sets.map(q=>`${q.w!=null?q.w:"?"}×${q.r!=null?q.r:"?"}`).join(" · ")}</div>`:""}
+  ${sg?`<div class="sug"><span>↑ Try <b>${sg.w} kg</b> today — you hit ${sg.top} reps on every set${sg.same?` at ${sg.from} kg`:""}.</span><button class="btn" data-sugw="${x.id}|${sg.w}|${x.planned}">Use ${sg.w} kg</button></div>`:""}
   ${x.tpl?`<div class="det" id="d${x.id}"><p><b>Start:</b> ${esc(x.start)}</p><p><b>How:</b> ${esc(x.how)}</p><p><b>No equipment?</b> ${esc(x.alt)}</p></div>`:""}
   <div class="lbl"><span>Set</span><span>Weight (kg)</span><span>Reps</span><span></span></div><div class="sets">${wu}${rows}</div>
   <div class="cfoot">${x.tpl?`<button class="lnk" data-det="${x.id}">How to · alternatives</button>`:"<span></span>"}<button class="lnk" data-addset="${x.id}">${ic("plus","")} Add set</button></div></div>`});
@@ -651,16 +694,17 @@ function trainingCalendar(){
  let cells="";
  for(let n=0;n<days;n++){
   const d=new Date(year,0,1+n),key=year+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate()),col=Math.floor((n+offset)/7)+1,row=(d.getDay()+6)%7+1,c=counts[key]||0;
-  cells+=`<span class="heat-day ${c?"active":""}" style="grid-column:${col};grid-row:${row}" title="${key}: ${c} workout${c==1?"":"s"}" aria-label="${key}: ${c} workouts"></span>`;
+  cells+=`<i class="heat-day ${c?"active":""}" style="grid-column:${col};grid-row:${row}" title="${key}: ${c} workout${c==1?"":"s"}" aria-label="${key}: ${c} workouts"></i>`;
  }
  let months="";
  for(let m=0;m<12;m++){const d=new Date(year,m,1),n=Math.round((d-first)/86400000),col=Math.floor((n+offset)/7)+1;months+=`<span style="grid-column:${col}/span 4">${d.toLocaleDateString([],{month:"short"})}</span>`}
+ const nowD=new Date(),tcol=nowD.getFullYear()===year?Math.floor((Math.round((new Date(year,nowD.getMonth(),nowD.getDate())-first)/86400000)+offset)/7)+1:1;
  const dates=Object.keys(counts).sort(),dateSet=new Set(dates);let best=0,run=0,prev=null;
  dates.forEach(k=>{const d=new Date(k+"T12:00:00"),t=d.getTime();if(prev!==null&&t-prev===86400000)run++;else run=1;best=Math.max(best,run);prev=t});
  const daysInYear=days;
  return `<section class="card heat-card"><div class="heat-head"><h3>Your gym years</h3><select class="heat-select" data-cal-year aria-label="Calendar year">${years.map(y=>`<option value="${y}" ${y===year?"selected":""}>${y}</option>`).join("")}</select></div>
- <div class="heat-summary"><div class="heat-stat"><b>${active}</b><span>Training days</span></div><div class="heat-stat"><b>${total}</b><span>Workouts logged</span></div><div class="heat-stat"><b>${best}</b><span>Longest streak</span></div></div>
- <div class="heat-scroll" role="img" aria-label="Training activity calendar for ${year}"><div class="heat-months">${months}</div><div class="heat-grid">${cells}</div></div>
+ <div class="heat-summary"><div class="heat-stat"><b>${active}</b><span>Training days</span></div><div class="heat-stat"><b>${total}</b><span>Workouts</span></div><div class="heat-stat"><b>${best}</b><span>Best streak</span></div></div>
+ <div class="heat-scroll" data-sc="${tcol}" role="img" aria-label="Training activity calendar for ${year}"><div class="heat-months">${months}</div><div class="heat-grid">${cells}</div></div>
  <div class="heat-legend"><span>Less</span><i class="heat-day"></i><i class="heat-day active"></i><span>More</span></div>
  <p class="heat-note">One square per day. Green means you logged at least one completed workout. ${active} of ${daysInYear} days trained in ${year}.</p></section>`;
 }
@@ -877,6 +921,7 @@ document.addEventListener("click",async e=>{
  else if(D.theme){setPref("theme",D.theme);render(true)}
  else if(D.mode){setPref("mode",D.mode);render(true)}
  else if(D.acc!==undefined){setPref("accent",D.acc);render(true)}
+ else if(D.sugw){const[sid,swt,sn]=D.sugw.split('|');for(let s=0;s<+sn;s++){const k=`${wk}-${day}-${sid}-${s}`,v=A.sets[k]=A.sets[k]||{};if(!v.d)v.w=swt}touch();saveA();render(1)}
  else if(D.start){tab="train";day=A.day=D.start;saveA(1);render()}
  else if(D.golog){tab="log";lf={day:"all",q:""};open.add(D.golog);render();const el=document.querySelector('[data-open="'+D.golog+'"]');el&&el.scrollIntoView({block:"center"})}
  else if(D.ps){ps=D.ps;if(D.pday)pd=D.pday;render()}
